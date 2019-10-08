@@ -8,13 +8,12 @@ module Garrison
         self.family ||= 'infrastructure'
         self.type ||= 'compliance'
         self.options[:regions] ||= 'all'
-        self.options[:engines] ||= 'all'
       end
 
       def key_values
         [
           { key: 'datacenter', value: 'aws' },
-          { key: 'aws-service', value: 'rds' },
+          { key: 'aws-service', value: 's3' },
           { key: 'aws-account', value: AwsHelper.whoami }
         ]
       end

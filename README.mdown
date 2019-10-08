@@ -7,14 +7,14 @@ This is a part of the [Garrison](https://github.com/forward3d/garrison) security
 
 | Function Name | Description  |
 | ------------- | ------------- |
-| `check_encryption` | Alerts if encryption is not enabled for an RDS instance. |
+| `check_encryption` | Alerts if encryption is not enabled for an S3 bucket. |
 | `check_public_access_block` | Alerts if there are any buckets defined without a public access block. |
 
 ### Installation & Example
 
-Docker Hub - https://hub.docker.com/r/forward3d/garrison-agent-aws-rds/
+Docker Hub - https://hub.docker.com/r/forward3d/garrison-agent-aws-s3/
 
-    docker pull forward3d/garrison-agent-aws-rds
+    docker pull forward3d/garrison-agent-aws-s3
     docker run --rm -e "GARRISON_URL=https://garrison.internal.acme.com" forward3d/garrison-agent-aws-s3 check_encryption
     docker run --rm -e "GARRISON_URL=https://garrison.internal.acme.com" -e "GARRISON_AWS_REGIONS=eu-west-1,us-west-2" forward3d/garrison-agent-aws-s3 check_public_access
 
