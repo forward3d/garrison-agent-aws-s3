@@ -1,0 +1,68 @@
+Garrison Agent - AWS S3
+--
+
+This is a part of the [Garrison](https://github.com/forward3d/garrison) security project. This agent provides various AWS S3 compliance checks.
+
+### Checks Provided
+
+| Function Name | Description  |
+| ------------- | ------------- |
+| `check_encryption` | Alerts if encryption is not enabled for an RDS instance. |
+| `check_public_access_block` | Alerts if there are any buckets defined without a public access block. |
+
+### Installation & Example
+
+Docker Hub - https://hub.docker.com/r/forward3d/garrison-agent-aws-rds/
+
+    docker pull forward3d/garrison-agent-aws-rds
+    docker run --rm -e "GARRISON_URL=https://garrison.internal.acme.com" forward3d/garrison-agent-aws-s3 check_encryption
+    docker run --rm -e "GARRISON_URL=https://garrison.internal.acme.com" -e "GARRISON_AWS_REGIONS=eu-west-1,us-west-2" forward3d/garrison-agent-aws-s3 check_public_access
+
+### Agent Specific Configuration
+
+These are additional specific configuration options for this agent. [Global agent configurations](https://github.com/forward3d/garrison#global-configuration-options) still apply.
+
+| Environmental Variable  | Default | Expects |
+| ------------- | ------------- | ------------- |
+| `GARRISON_AWS_REGIONS` | `all` [[1]](#f1) | Comma Separated Strings eg. `eu-west-1,us-west-2` |
+
+#### AWS Authentication
+
+As this requires access to the AWS API you will need this IAM policy as a minimum for it to operate correctly.
+
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Action": [
+                  "s3:GetBucketEncryption",
+                  "s3:GetBucketPublicAccessBlock",
+                  "s3:GetBucketLocation",
+                  "s3:ListAllMyBuckets"
+                ],
+                "Resource": "*",
+                "Effect": "Allow"
+            }
+        ]
+    }
+
+We recommend using EC2/ECS Task roles so that you don't need to send credentials into the container, however if you can't use those or want to send in specific Access Keys and Secret keys, please see the [AWS Documentation](https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html#aws-ruby-sdk-credentials-environment) as to how you do that.
+
+##### Cross-Account Authentication (`STS AssumeRole`)
+
+If you run Garrison agents in one account, and want to reach into other AWS accounts you need to send in extra environmental variables to support that.
+
+| Environmental Variable | Value |
+| ------------- | ------------- |
+| `AWS_ACCOUNT_ID` | Not used as part of authentication, but to override the tag set on any alerts |
+| `AWS_ASSUME_ROLE_CREDENTIALS_ARN` | Arn of the role (in the other account) you wish to assume |
+
+### Check Specific Configuration
+
+Some checks provided by this agent have extra configuration options.
+
+#### `check_public_access`
+
+| Environmental Variable | Default |
+| ------------- | ------------- |
+| `GARRISON_S3_ALLOWED_PUBLIC_BUCKETS` | |

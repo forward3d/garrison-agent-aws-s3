@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require_relative '../environment'
+
+module Garrison
+  module Checks
+    @options[:excluded_buckets] = ENV['GARRISON_S3_ALLOWED_PUBLIC_BUCKETS'].split(',')
+    check = CheckPublicAccessBlock.new(@options)
+    check.run
+  end
+end
